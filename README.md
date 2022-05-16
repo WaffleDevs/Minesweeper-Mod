@@ -6,5 +6,5 @@ for my [minesweeper](https://waffledevs.github.io/minesweeper)
 
 add this as a bookmark!
 ```
-javascript: (function() {r=new XMLHttpRequest();r.onload=function(){eval(this.responseText);};r.open('GET','https://raw.githubusercontent.com/WaffleDevs/minesweeper/main/minesweeper.mod.js');r.send();})()
+javascript: (function() {r=new XMLHttpRequest();r.onload=function(){eval(this.responseText);};r.open('GET','https://raw.githubusercontent.com/WaffleDevs/Minesweeper-Mod/main/minesweeper.mod.js');r.send();})()
 ```
