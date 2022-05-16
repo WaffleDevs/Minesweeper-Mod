@@ -1,5 +1,5 @@
-javascript: (function() {
-	const style = "style='margin-top: 2px; width: 30px;'";
+
+const style = "style='margin-top: 2px; width: 30px;'";
   const newBombArray = [25, 36, 49, 64, 81, 100, 144, 225];
   const newBombCount = [5, 6, 7, 8, 10, 20, 30, 40];
   const newElem = [
@@ -169,4 +169,4 @@ javascript: (function() {
   }
   
   placealeboard(25)
-})()
+
