@@ -1,39 +1,48 @@
+javascript: (function() {
+
+
 const style = "style='margin-top: 2px; width: 60px;'";
-const newBombArray = [25, 36, 49, 64, 81, 100, 144, 225];
-const newBombCount = [5, 6, 7, 8, 10, 20, 30, 40];
+const newBombArray = [25, 36, 49, 64, 81, 100, 144, 225, 256, 289, 324, 361, 400, 441];
+const newBombCount = [5, 6, 7, 8, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 const newElem = [
-  $(`<button  class='moddedModes' id='blocks25' ${style}>5x5</button><br>`),
-  $(`<button  class='moddedModes' id='blocks36' ${style}>6x6</button><br>`),
-  $(`<button  class='moddedModes' id='blocks49' ${style}>7x7</button><br>`),
-  $(`<button  class='moddedModes' id='blocks64' ${style}>8x8</button><br>`),
-  $(`<button  class='moddedModes' id='blocks81' ${style}>9x9 (Small)</button><br>`),
-  $(`<button  class='moddedModes' id='blocks100' ${style}>10x10</button><br>`),
-  $(`<button  class='moddedModes' id='blocks144' ${style}>12x12</button><br>`),
-  $(`<button  class='moddedModes' id='blocks225' ${style}>15x15</button><br>`)
-];
+	['5x5', '25'],
+	['6x6', '36'],
+	['7x7', '49'],
+	['8x8', '64'],
+	['9x9 (Small)', '81'],
+	['10x10', '100'],
+	['12x12', '144'],
+	['15x15 (Medium)', '225'],
+	['16x16', '256'],
+	['17x17', '289'],
+	['18x18', '324'],
+	['19x19', '361'],
+	['20x20', '400'],
+	['21x21 (Large)', '441']
+]
+function init() {
+  let thing = [0, 1, 0, 1, 0, 1];
+	$('.modes').remove();
 
-$('.modes').remove();
+  $("body").append($("<table id='moddedModes' style='text-align: left; top: 10%; color: white; left: 0%; position: absolute;'></table>"));
+  highscore = {}
+  for (const elem of newElem) {
+    $('#moddedModes').append($(`<button  class='moddedModes' id='blocks${elem[1]}' ${style}>${elem[0]}</button><br>`));
+  	highscore[elem[1]] = 0;
+  }
+  $("#moddedModes").on("click", ".moddedModes", function() {
+    let id = this.id;
+    id = id.slice(6);
+    placealeboard(id);
+  });
+  let bombLength = newBombArray.length;
 
-let thing = [0, 1, 0, 1, 0, 1];
-
-$("body").append($("<table id='moddedModes' style='text-align: left; top: 10%; color: white; left: 0%; position: absolute;'></table>"));
-for (const elem of newElem) {
-  $('#moddedModes').append(elem);
+  for (let i = 0; i < bombLength; i++) {
+    bombArray[newBombArray[i]] = newBombCount[i];
+  }
+  placealeboard(25);
 }
-$("#moddedModes").on("click", ".moddedModes", function() {
-  let id = this.id;
-  id = id.slice(6);
-  console.log(id);
-  placealeboard(id);
-});
-let bombLength = newBombArray.length;
-
-for (let i = 0; i < bombLength; i++) {
-  bombArray[newBombArray[i]] = newBombCount[i];
-}
-
 function drawaBoard() {
-  console.log((parseInt(blocks) + 1) % 2 + ' ' + blocks + 'aa');
   let lane = 1;
   for (let i = 1; i <= blocks; i++) {
     if (board[i - 1].shown == true) {
@@ -85,9 +94,15 @@ function drawaBoard() {
   }
 }
 function placealeboard(mode, redo, id) {
+	$('#highscore').text(`Highscore: ${highscore[mode]}s`);
+  clearInterval(timerval);
+  timer = 0;
+  $('#timer').text(`Time: ${timer}s`);
+  flags = 0;
+  $(`#flagCount`).text('Flags Left: ' + bombArray[mode]);
   $("html").removeClass('lost');
   $("html").removeClass('win');
-  $("#result").text("placeholder");
+  $("#result").text("");
   clicked = false;
   playing = true;
   board = [];
@@ -127,14 +142,11 @@ function placealeboard(mode, redo, id) {
         board[i - 1].amntOfBombs += 1;
     });
     board[i - 1].id = i;
-    if (board[i - 1].amntOfBombs > 5 && !board[i - 1].bomb) {
-      console.log(board[i - 1].amntOfBombs + " " + board[i - 1].id);
-    }
   }
   drawaBoard();
 }
 
-$("body").on("click", ".modblock", function(e) {
+$("body").on("mousedown", ".modblock", function(e) {
   if (e.button == 2) {
     if ($("#" + this.id + "i").length == 0 && !board[this.id-1].shown && flags < bombArray[blocks]) addFlag(this.id, this.id + "i");
     else if($("#" + this.id + "i").length != 0 ) removeFlag(this.id + "i");
@@ -147,6 +159,7 @@ function mclick(id) {
   if (!clicked && (board[id - 1].amntOfBombs != 0 || board[id - 1].bomb == true)) {
     redoBoard(blocks, id);
   }
+  if(!clicked) startTimer()
   clicked = true;
   if ($("#" + id + "i").length != 0) return;
   if (!playing) return;
@@ -162,9 +175,10 @@ function mclick(id) {
   board.forEach((a) => {
     if (a.shown) shownBlocks++;
   });
-  console.log(`${shownBlocks} ${blocks-bombArray[blocks]} bb`);
   drawaBoard();
   if (shownBlocks == blocks - bombArray[blocks]) win();
 }
 
-placealeboard(25);
+init()
+
+})()
